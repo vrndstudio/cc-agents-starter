@@ -1,0 +1,13 @@
+# Plugins to install in every new sandbox.
+#
+# One per line:  <plugin-name>@<marketplace-name>
+#
+# The two names are often different. To get the exact string, open Claude once,
+# run /plugin, find the plugin, and copy what it shows. Then paste it here and
+# every future sandbox installs it on its own.
+#
+# Lines starting with # are ignored.
+
+superpowers@claude-plugins-official
+context7@claude-plugins-official
+frontend-design@claude-plugins-official

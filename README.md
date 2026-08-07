@@ -25,7 +25,7 @@ A small set of files that opens a Claude Code sandbox. You run one command and i
 ## How to use it
 
 ```bash
-./start.sh /opt/sbx/my-project
+./start.sh path/to/my-project
 ```
 
 Run it again later with the same folder and it reopens the same space instead of
@@ -66,7 +66,7 @@ don't trust, open it in a stricter mode where the space can only read your
 files and Claude works on a private copy instead:
 
 ```bash
-sbx create --clone --name my-project claude /opt/sbx/my-project
+sbx create --clone --name my-project claude path/to/my-project
 sbx run --name my-project
 ```
 

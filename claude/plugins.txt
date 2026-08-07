@@ -1,10 +1,13 @@
-# Plugins to install in every new sandbox.
+# Plugins installed into every new sandbox.
 #
-# One per line:  <plugin-name>@<marketplace-name>
+# Format, whitespace separated:
+#   <marketplace-repo>   <plugin-name>@<marketplace-name>
 #
-# The two names are often different. To get the exact string, open Claude once,
-# run /plugin, find the plugin, and copy what it shows. Then paste it here and
-# every future sandbox installs it on its own.
+# The two names are often different, so don't guess. Capture the exact strings
+# from a machine where the plugins already work:
+#
+#   claude plugin list                 # gives  <plugin-name>@<marketplace-name>
+#   claude plugin marketplace list     # gives  <marketplace-repo>
 #
 # Lines starting with # are ignored.
 

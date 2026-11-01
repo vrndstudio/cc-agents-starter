@@ -11,5 +11,5 @@
 #
 # Lines starting with # are ignored.
 
-superpowers@claude-plugins-official
-frontend-design@claude-plugins-official
+anthropics/claude-plugins-official  superpowers@claude-plugins-official
+anthropics/claude-plugins-official  frontend-design@claude-plugins-official

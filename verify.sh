@@ -15,6 +15,16 @@ sbx exec -it "$NAME" bash -lc '
   echo "rg:     $(version rg --version)"
   echo "fzf:    $(version fzf --version)"
   echo "jq:     $(version jq --version)"
+  echo "fd:     $(version fd --version)"
+  echo "sg:     $(version ast-grep --version)"
+  echo "shchk:  $(command -v shellcheck >/dev/null && shellcheck --version | sed -n 2p || echo MISSING)"
+  echo "shfmt:  $(version shfmt --version)"
+  echo "oxlint: $(version oxlint --version)"
+  echo "oxfmt:  $(version oxfmt --version)"
+  echo "prek:   $(version prek --version)"
+  echo "trash:  $(version trash --version)"
+  echo "nano:   $(version nano --version)"
+  echo "status: $(test -x ~/.claude/statusline.sh && echo ok || echo MISSING)"
   test -f "$HOME/.setup-done" && echo "marker: set" || echo "marker: MISSING"
 
   echo
@@ -34,6 +44,10 @@ sbx exec -it "$NAME" bash -lc '
   echo
   echo "--- marketplaces ---"
   claude plugin marketplace list
+
+  echo
+  echo "--- mcp ---"
+  claude mcp get exa || echo "exa: MISSING"
 
   echo
   echo "--- user-level skills ---"

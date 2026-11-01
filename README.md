@@ -40,9 +40,11 @@ on either side appear on the other immediately.
 ├── start.sh          create or reopen a sandbox for a project, then attach
 ├── setup.sh          runs inside the sandbox, once (start.sh calls it)
 ├── verify.sh         check what actually got installed
+├── TOOLS.md          one line per tool setup.sh installs
 └── claude/
     ├── settings.json   copied to ~/.claude/settings.json in the sandbox
     ├── CLAUDE.md       copied to ~/.claude/CLAUDE.md in the sandbox
+    ├── statusline.sh   copied to ~/.claude/statusline.sh (model │ branch │ context % │ 5h usage %)
     └── plugins.txt     plugins to install
 ```
 
@@ -104,7 +106,7 @@ Inside a session, `/sbxstat` prints a quick isolation check (user, home,
 
 ## Network blocks
 
-Outbound traffic is default-deny. A blocked request returns HTTP 403 with the
+Outbound traffic is default-deny; allow domains by hand as needed. A blocked request returns HTTP 403 with the
 reason in the body. To see and allow, on your Mac:
 
 ```bash
@@ -267,24 +269,28 @@ rebuilding over nursing a months-old VM with a stale token in it.
 
 ## Updating sandbox `~/.claude/settings.json` file
 
-1. From your host terminal (recommended): `sbx exec -it offfeed bash`. That shell runs outside Claude's sandbox, so the files are writable there. There's no editor in the image (no `nano`, `vim` or `vi`), so for now either use `cat > file <<'EOF'` or `jq` from that shell, or install one: apt install nano. I added "install an editor" to the provisioning record as D12. I haven't tested `sbx exec` from here. Claude Code reloads `settings.json` on save, as it did with the strict-mode change.
+The agent can't read or edit its own settings, by design. Edit from outside it:
 
-2. From this chat, using the built-in screens:
-   - /permissions: add or remove allow/ask/deny rules.
-   - /sandbox: sandbox settings.
-   - /config: everything else.
+- **VS Code Remote-SSH** (recommended). Once, on your Mac: `sbx setup ssh`.
+  Then Command Palette → `Remote-SSH: Connect to Host…` → type
+  `<sandbox-name>.sbx` (don't pick from the list) → open
+  `/home/agent/.claude/settings.json`. The first connect downloads the VS Code
+  server into the VM; if it's blocked, check `sbx policy log`.
+- **Shell**: `sbx exec -it <sandbox-name> bash`, then `nano ~/.claude/settings.json`.
+  That shell runs outside Claude's bash sandbox, so the file is writable.
+- **Copy out and back**:
+  ```bash
+  sbx cp <sandbox-name>:/home/agent/.claude/settings.json ./settings.json
+  sbx cp ./settings.json <sandbox-name>:/home/agent/.claude/settings.json
+  ```
+- **Inside Claude**: `/permissions`, `/sandbox`, `/config`.
 
---> try this:
+Claude Code reloads `settings.json` on save. Never symlink it into the project
+folder: the agent can write there.
 
-```bash
-sbx setup ssh
-ssh <sandbox-name>.sbx
-```
-
-find in ssh explorer by hand
-
-1. Open the Command Palette (`Cmd+Shift+P`) and run `Remote-SSH: Connect to Host…`
-2. Type `<sandbox-name>.sbx` and press `Enter`. Don't pick it from a list.
+To push a newer `claude/settings.json` (or any setup change) to an existing
+sandbox, clear the marker and rerun: `sbx exec <sandbox-name> rm ~/.setup-done`,
+then `./start.sh <project>`. `setup.sh` is safe to run again.
 
 ---
 

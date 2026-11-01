@@ -29,6 +29,6 @@ Hard cap: 5 lines unless asked to expand.
 
 ## Open
 
-- update setup with `tasks/provisioning-changes.md` and `tasks/sandbox-and-network.md`
+- setup upgrade (`tasks/provisioning-changes.md`): install `wt`; O1 mcp-gateway
 - [later] install bun in `setup.sh`
 - [later] Codeberg token support in `start.sh`: see `tasks/codeberg-token.md`

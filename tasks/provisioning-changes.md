@@ -6,14 +6,14 @@ From verifying `offfeed`, 2026-11-01. Rationale and decision IDs (`D#`): `sandbo
 
 | # | Item | Where | Status here |
 |---|------|-------|-------------|
-| P1 | Fix pnpm (corepack too old) | image build | hand-fixed |
-| P2 | Ship `~/.claude/statusline.sh` | image files | hand-created |
-| P3 | Register Exa MCP | provisioning (host side) | ✅ |
-| P4 | Settings editing path for user (D12) | host SSH setup; editor optional | docs only |
-| P5 | sbx network policy | host | `mcp.exa.ai` ✅ · rest ⬜ |
-| P6 | `~/.claude/settings.json` | image files | ✅ D2–D4, D5 deny, D11 · 🟡 D5 allow, D6/D7 unverified |
-| P7 | Missing CLI tools | image build | missing |
-| P8 | Settings cleanup | image files | — |
+| P1 | Fix pnpm (corepack too old) | image build | `setup.sh` §3 ✅ (latest, unpinned) |
+| P2 | Ship `~/.claude/statusline.sh` | image files | `claude/statusline.sh` ✅ |
+| P3 | Register Exa MCP | provisioning (host side) | `setup.sh` §6 ✅ |
+| P4 | Settings editing path for user (D12) | host SSH setup; editor optional | README ✅ · `nano` in `setup.sh` |
+| P5 | sbx network policy | host | by hand, gradually (not scripted) |
+| P6 | `~/.claude/settings.json` | image files | `claude/settings.json` ✅ · D6/D7 untested in fresh sandbox |
+| P7 | Missing CLI tools | image build | `setup.sh` §2, §4 · `wt` ⬜ |
+| P8 | Settings cleanup | image files | ✅ |
 
 ## P1 pnpm
 
@@ -31,8 +31,8 @@ From verifying `offfeed`, 2026-11-01. Rationale and decision IDs (`D#`): `sandbo
 
 ## P2 Status line
 
-- `statusLine.command = "bash ~/.claude/statusline.sh"`; file wasn't provisioned.
-- Copy from this sandbox. Output: `model │ dir │ branch[*] │ $cost`. Needs `jq`, `git`.
+- `claude/statusline.sh`. Output: `model │ branch[*] │ ctx N% │ 5h N% (resets HH:MM)`.
+- Data from Claude Code's stdin JSON (`context_window.used_percentage`, `rate_limits.five_hour`). Needs `jq`, `git`.
 
 ## P3 Exa MCP
 
@@ -106,6 +106,7 @@ sbx policy allow network code.claude.com,docs.anthropic.com,developer.mozilla.or
 
 - `trash`: hook + CLAUDE.md require it. Install `trash-cli` or change the hook message.
 - CLAUDE.md expects: `fd`, `ast-grep`, `shellcheck`, `shfmt`, `oxlint`, `oxfmt`, `prek`, `wt`.
+- `wt` (worktrunk) not installed: no cargo in image, no pinned install path chosen yet.
 
 ## P8 Cleanup (optional)
 

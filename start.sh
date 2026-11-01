@@ -47,11 +47,11 @@ else
 fi
 
 # --- credentials -----------------------------------------------------------
-# Tokens are scoped to one sandbox, using the positional form:
-#   pbpaste | sbx secret set "$NAME" github
+# Tokens are scoped to one sandbox with --sandbox:
+#   pbpaste | sbx secret set github --sandbox "$NAME"
 #
-# A global (-g) secret is injected into EVERY sandbox at creation, including
-# throwaways for repos you don't trust. The proxy hides a token's value from
+# Without --sandbox, a secret is global: injected into EVERY sandbox at
+# creation, including throwaways for repos you don't trust. The proxy hides a token's value from
 # the agent but not its capability, so one global token means any compromised
 # sandbox can act as you on every repo that token covers. Scoping per sandbox
 # keeps the blast radius to one project.
@@ -62,11 +62,17 @@ fi
 #
 # This runs after create because a sandbox has to exist before a secret can be
 # scoped to it.
-if ! sbx secret ls 2>/dev/null | grep -q "^$NAME[[:space:]].*github"; then
+# 'sbx secret ls' columns: SCOPE TYPE NAME SECRET, indented.
+has_github_secret() {
+  sbx secret ls 2>/dev/null |
+    awk -v scope="$1" '$1 == scope && $3 == "github" {found = 1} END {exit !found}'
+}
+
+if ! has_github_secret "$NAME"; then
   read -rp "No GitHub token for '$NAME'. Set one from the clipboard now? [y/N] " ans
   case "${ans:-n}" in
-    [yY]) pbpaste | sbx secret set "$NAME" github ;;
-    *)    echo "skipped. Set it later with:  pbpaste | sbx secret set $NAME github" ;;
+    [yY]) pbpaste | sbx secret set github --sandbox "$NAME" ;;
+    *)    echo "skipped. Set it later with:  pbpaste | sbx secret set github --sandbox $NAME" ;;
   esac
 fi
 

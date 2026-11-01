@@ -78,9 +78,9 @@ Provision a new sandbox, or reopen an existing one, then check it:
 
 ```bash
 cd <provisioning-repo>
-./start.sh <project>                                # name = project folder name
-SBX_NAME=<sandbox-name> ./start.sh <project>        # or pick the name yourself
-./verify.sh <sandbox-name>
+bash ./start.sh <project>                             # name = project folder name
+SBX_NAME=<sandbox-name> ./start.sh <project>          # or pick the name yourself
+bash ./verify.sh <sandbox-name>
 ```
 
 - `<project>`: path to the project folder, e.g. `/opt/<workspace-dir>/my-app`
@@ -156,49 +156,44 @@ which is exactly what this setup prevents.
 
 ## Provisioning a sandbox you already made
 
-If you created a sandbox by hand and want this setup applied to it:
+If you created a sandbox by hand and want this setup applied to it, point
+`start.sh` at it by name:
 
 ```bash
 cd <provisioning-repo>
-tar czf /tmp/provision.tgz setup.sh claude
-sbx cp /tmp/provision.tgz <sandbox-name>:/tmp/provision.tgz
-sbx exec -it <sandbox-name> bash -lc '
-  mkdir -p /tmp/provision
-  tar xzf /tmp/provision.tgz -C /tmp/provision
-  bash /tmp/provision/setup.sh
-'
-rm /tmp/provision.tgz
-```
-
-Its existing project binding is untouched.
-
-To have `start.sh` reuse a sandbox whose name doesn't match the project folder:
-
-```bash
 SBX_NAME=<sandbox-name> ./start.sh <project>
 ```
+
+The sandbox exists, so `sbx create` is skipped and its project binding is
+untouched. Setup runs if it hasn't run there before, then you're attached.
 
 ---
 
 ## Credentials
 
-Tokens are scoped to a single sandbox. Scope is a positional argument, not a
-flag:
+Tokens are scoped to a single sandbox with `--sandbox`. The sandbox must
+exist first:
 
 ```bash
-pbpaste | sbx secret set <sandbox-name> github
+pbpaste | sbx secret set github --sandbox <sandbox-name>
+sbx secret ls                                  # confirm the scope column
 ```
 
 Rotating an expiring token needs no rebuild:
 
 ```bash
-sbx secret rm <sandbox-name> github
-pbpaste | sbx secret set <sandbox-name> github
+sbx secret rm github --sandbox <sandbox-name>
+pbpaste | sbx secret set github --sandbox <sandbox-name>
 ```
 
-Restart the Claude session afterwards.
+Restart the Claude session afterwards. If it still sees the old value,
+`sbx stop <sandbox-name>` then `sbx run --name <sandbox-name>`.
 
-**Avoid global (`-g`) secrets.** They're injected into every sandbox at
+Older `sbx` versions used the positional form `sbx secret set <sandbox-name>
+github`. Check `sbx secret set --help` if the flag errors.
+
+**Avoid global secrets.** Bare `sbx secret set github`, without
+`--sandbox`, is global. Global secrets are injected into every sandbox at
 creation, including throwaways for untrusted repos. The credential proxy hides
 a token's value from the agent but not its capability, so one global token
 means any compromised sandbox can act as you on every repo it covers.
@@ -279,9 +274,9 @@ rebuilding over nursing a months-old VM with a stale token in it.
 - **Never let the agent edit its own permissions file.** This repo is the
   source of truth for `~/.claude/settings.json`. If the agent rewrites it,
   re-run setup rather than accepting the diff.
-- **Column parsing is a guess.** `start.sh` greps `sbx ls` and
-  `sbx secret ls` output. Run both once and adjust the `awk`/`grep` if the
-  layout differs on your version.
+- **Column parsing is version-dependent.** `start.sh` parses `sbx ls`
+  (name in column 1) and `sbx secret ls` (`SCOPE TYPE NAME SECRET`). If either
+  layout changes, adjust the `awk` in `start.sh`.
 - **sbx is Early Access.** Commands and flags move. Check
   `sbx <command> --help` when something behaves unexpectedly.
 

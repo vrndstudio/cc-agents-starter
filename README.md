@@ -265,6 +265,29 @@ rebuilding over nursing a months-old VM with a stale token in it.
 
 ---
 
+## Updating sandbox `~/.claude/settings.json` file
+
+1. From your host terminal (recommended): `sbx exec -it offfeed bash`. That shell runs outside Claude's sandbox, so the files are writable there. There's no editor in the image (no `nano`, `vim` or `vi`), so for now either use `cat > file <<'EOF'` or `jq` from that shell, or install one: apt install nano. I added "install an editor" to the provisioning record as D12. I haven't tested `sbx exec` from here. Claude Code reloads `settings.json` on save, as it did with the strict-mode change.
+
+2. From this chat, using the built-in screens:
+   - /permissions: add or remove allow/ask/deny rules.
+   - /sandbox: sandbox settings.
+   - /config: everything else.
+
+--> try this:
+
+```bash
+sbx setup ssh
+ssh <sandbox-name>.sbx
+```
+
+find in ssh explorer by hand
+
+1. Open the Command Palette (`Cmd+Shift+P`) and run `Remote-SSH: Connect to Host…`
+2. Type `<sandbox-name>.sbx` and press `Enter`. Don't pick it from a list.
+
+---
+
 ## Notes and caveats
 
 - **Plugin strings need capturing, not guessing.** Each line of

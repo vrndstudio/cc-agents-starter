@@ -7,7 +7,30 @@
   "effortLevel": "high",
   "sandbox": {
     "enabled": true,
-    "autoAllowBashIfSandboxed": false
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "autoAllowBashIfSandboxed": false,
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/node/corepack",
+        "~/.cache/pnpm",
+        "~/.local/share/pnpm",
+        "~/.cache/uv"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "github.com",
+        "codeload.github.com"
+      ],
+      "deniedDomains": [
+        "gist.github.com",
+        "uploads.github.com"
+      ]
+    }
   },
   "theme": "dark-ansi",
   "env": {
@@ -79,13 +102,16 @@
       "Bash(pnpm tsc *)",
       "Bash(pnpm --version)",
       "Bash(node *)",
-      "Bash(bun *)",
-      "Bash(pnpm tailwindcss *)",
-      "Bash(claude mcp *)",
       "mcp__exa__web_search_exa",
       "mcp__exa__web_fetch_exa",
       "mcp__claude_ai_Context7__resolve-library-id",
-      "mcp__claude_ai_Context7__query-docs"
+      "mcp__claude_ai_Context7__query-docs",
+      "WebSearch",
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebFetch(domain:nodejs.org)",
+      "WebFetch(domain:pnpm.io)"
     ],
     "deny": [
       "Edit(production.*)",
@@ -128,26 +154,20 @@
       "Read(~/.npm/**)",
       "Read(~/.pypirc)",
       "Read(~/.gem/credentials)",
-      "Read(~/Library/Keychains/**)",
-      "Read(~/Library/Application Support/**/metamask*/**)",
-      "Read(~/Library/Application Support/**/electrum*/**)",
-      "Read(~/Library/Application Support/**/exodus*/**)",
-      "Read(~/Library/Application Support/**/phantom*/**)",
-      "Read(~/Library/Application Support/**/solflare*/**)",
       "Bash(git push --force*)",
       "Bash(git push *--force*)",
       "Bash(git reset --hard*)",
       "Bash(curl:*)",
-      "Bash(wget:*)",
-      "WebFetch",
-      "WebSearch"
+      "Bash(wget:*)"
     ],
     "ask": [
       "Bash(git push *)",
       "Bash(git branch -D *)",
       "Bash(git checkout main*)",
       "Bash(git checkout master*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "WebFetch",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   },
   "hooks": {

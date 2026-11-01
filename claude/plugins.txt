@@ -12,5 +12,4 @@
 # Lines starting with # are ignored.
 
 superpowers@claude-plugins-official
-context7@claude-plugins-official
 frontend-design@claude-plugins-official

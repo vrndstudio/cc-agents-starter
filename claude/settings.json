@@ -4,7 +4,6 @@
   "enableAllProjectMcpServers": false,
   "alwaysThinkingEnabled": false,
   "model": "opus",
-  "effort": "high",
   "effortLevel": "high",
   "sandbox": {
     "enabled": true,
@@ -27,7 +26,6 @@
   },
   "permissions": {
     "disableBypassPermissionsMode": "disable",
-    "allowedTools": ["Read", "Write"],
     "allow": [
       "Bash(pwd)",
       "Bash(ls:*)",
@@ -49,7 +47,6 @@
       "Bash(tail:*)",
       "Bash(grep:*)",
       "Bash(sort:*)",
-
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git status)",
@@ -62,7 +59,6 @@
       "Bash(git diff:*)",
       "Bash(git tag:*)",
       "Bash(git fetch:*)",
-      "Bash(git config:*)",
       "Bash(git switch *)",
       "Bash(git push)",
       "Bash(git push origin)",
@@ -73,7 +69,6 @@
       "Bash(git branch *)",
       "Bash(git merge --no-ff *)",
       "Bash(git merge *)",
-
       "Bash(pnpm add *)",
       "Bash(pnpm remove *)",
       "Bash(pnpm exec *)",
@@ -86,55 +81,39 @@
       "Bash(node *)",
       "Bash(bun *)",
       "Bash(pnpm tailwindcss *)",
-
-      "Bash(curl http://localhost:*)",
-      "Bash(curl -s http://localhost:*)",
-      "Bash(curl -sS http://localhost:*)",
-      "Bash(curl -i http://localhost:*)",
-      "Bash(sleep * && curl -sS http://localhost:*)",
-      "Bash(sleep * && curl -s http://localhost:*)",
-      "Bash(curl http://127.0.0.1:*)",
-      "Bash(curl -s http://127.0.0.1:*)",
       "Bash(claude mcp *)",
       "mcp__exa__web_search_exa",
       "mcp__exa__web_fetch_exa",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__query-docs",
-
-      "Read(//home/vrnd_studio/.claude/plugins/**)",
-      "Read(//home/vrnd_studio/.claude/skills/**)"
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs"
     ],
     "deny": [
-      "Write(production.*)",
-      "Write(**/node_modules/**)",
+      "Edit(production.*)",
+      "Edit(**/node_modules/**)",
       "Bash(rm -rf *)",
       "Bash(rm -fr *)",
       "Bash(rm -r *)",
       "Bash(sudo *)",
       "Bash(mkfs *)",
       "Bash(dd *)",
-
       "Read(**/.env*)",
-      "Write(**/.env*)",
+      "Edit(**/.env*)",
       "Read(**/*secret*)",
-      "Write(**/*secret*)",
+      "Edit(**/*secret*)",
       "Read(**/*credentials*)",
-      "Write(**/*credentials*)",
+      "Edit(**/*credentials*)",
       "Read(**/.npmrc)",
-      "Write(**/.npmrc)",
+      "Edit(**/.npmrc)",
       "Read(**/*.pem)",
-      "Write(**/*.pem)",
+      "Edit(**/*.pem)",
       "Read(**/*.key)",
-      "Write(**/*.key)",
-      "Write(/mnt/c/*)",
+      "Edit(**/*.key)",
       "Bash(wget *|bash*)",
       "Bash(wget *| bash*)",
       "Edit(~/.bashrc)",
       "Read(~/.zshrc)",
-      "Write(~/.zshrc)",
       "Edit(~/.zshrc)",
       "Read(~/.zshrc*)",
-      "Write(~/.zshrc*)",
       "Edit(~/.zshrc*)",
       "Edit(~/.ssh/**)",
       "Read(~/.ssh/**)",
@@ -155,18 +134,21 @@
       "Read(~/Library/Application Support/**/exodus*/**)",
       "Read(~/Library/Application Support/**/phantom*/**)",
       "Read(~/Library/Application Support/**/solflare*/**)",
-
       "Bash(git push --force*)",
       "Bash(git push *--force*)",
       "Bash(git reset --hard*)",
-
       "Bash(curl:*)",
       "Bash(wget:*)",
-
       "WebFetch",
       "WebSearch"
     ],
-    "ask": ["Bash(git push *)", "Bash(git branch -D *)", "Bash(git checkout main*)", "Bash(git checkout master*)"]
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git branch -D *)",
+      "Bash(git checkout main*)",
+      "Bash(git checkout master*)",
+      "Bash(git config:*)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -189,15 +171,10 @@
     "skill-creator@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
     "caveman@caveman": true,
     "context7@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "agent-browser@agent-browser": true
   },
@@ -206,12 +183,6 @@
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "thedotmack": {
-      "source": {
-        "source": "github",
-        "repo": "thedotmack/claude-mem"
       }
     },
     "agent-browser": {

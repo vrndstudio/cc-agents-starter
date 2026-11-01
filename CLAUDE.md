@@ -32,3 +32,4 @@ Hard cap: 5 lines unless asked to expand.
 - View and edit the sandbox's `~/.claude` from the VS Code explorer. Prefer a widely used
   solution.
 - [later] install bun in `setup.sh`
+- [later] Codeberg token support in `start.sh`: see `tasks/codeberg-token.md`

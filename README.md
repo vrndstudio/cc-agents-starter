@@ -63,32 +63,29 @@ on either side appear on the other immediately.
    chmod +x <provisioning-repo>/*.sh
    ```
 
-3. go to workspace dir and allow permissions? 
-
-   ```bash
-   sudo mkdir -p /opt/<your-workspace-dir>
-   sudo chown "$(whoami)" /opt/<your-workspace-dir>
-   ```
-
-OR creating a new sandown with custom name from project folder:
-```
-SBX_NAME=<name> bash ./start.sh .
-```
 
 4. Mint a **fine-grained** GitHub token at
    Settings → Developer settings → Personal access tokens → Fine-grained.
    Scope it to only the repos Claude will touch, with Contents read/write,
-   Pull requests read/write, Metadata read. Short expiry.
-   <!-- here how should we setups the global github token vs. the sanbox-scoped one? -->
+   Pull requests read/write, Metadata read. Short expiry. Set it per sandbox,
+   not globally: see [Credentials](#credentials).
 
 ---
 
 ## Daily use
 
+Provision a new sandbox, or reopen an existing one, then check it:
+
 ```bash
 cd <provisioning-repo>
-./start.sh <project>
+./start.sh <project>                                # name = project folder name
+SBX_NAME=<sandbox-name> ./start.sh <project>        # or pick the name yourself
+./verify.sh <sandbox-name>
 ```
+
+- `<project>`: path to the project folder, e.g. `/opt/<workspace-dir>/my-app`
+  or `.` for the current folder.
+- `<sandbox-name>`: what `sbx ls` shows. Defaults to the project folder name.
 
 Run it again on the same project and it reopens the same sandbox instead of
 making a new one. Setup only runs the first time.
@@ -100,11 +97,28 @@ The first time you're inside Claude, type `/login` and pick **Claude account
 with subscription**. That uses the Claude plan you already pay for, at no
 extra cost.
 
-Check the result any time:
+Inside a session, `/sbxstat` prints a quick isolation check (user, home,
+`~/.ssh`, `/Users`).
+
+---
+
+## Network blocks
+
+Outbound traffic is default-deny. A blocked request returns HTTP 403 with the
+reason in the body. To see and allow, on your Mac:
 
 ```bash
-./verify.sh <sandbox-name>
+sbx policy log <sandbox-name>               # what got blocked, and why
+sbx policy allow network <domain>[,<domain>]
+sbx policy ls                               # active rules
 ```
+
+If the reason says `corporate policy` or `system policy`, `sbx policy allow`
+won't help; that block is set above you.
+
+MCP servers connect at session start, so after allowing a domain, reconnect
+with `/mcp` or restart the session. Prefer claude.ai connectors (e.g. Context7)
+over plugin MCP servers that need their own domains allowed.
 
 ---
 
@@ -258,10 +272,10 @@ rebuilding over nursing a months-old VM with a stale token in it.
 
 ## Notes and caveats
 
-- **Plugin strings need capturing, not guessing.** `claude/plugins.txt` ships
-  with a placeholder entry. Run `claude plugin list` and
-  `claude plugin marketplace list` on a machine where your plugins already
-  work, and paste the exact strings in.
+- **Plugin strings need capturing, not guessing.** Each line of
+  `claude/plugins.txt` is `<marketplace-repo>  <plugin-name>@<marketplace-name>`.
+  Get the exact strings from `claude plugin marketplace list` and
+  `claude plugin list` on a machine where the plugins already work.
 - **Never let the agent edit its own permissions file.** This repo is the
   source of truth for `~/.claude/settings.json`. If the agent rewrites it,
   re-run setup rather than accepting the diff.

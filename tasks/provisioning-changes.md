@@ -6,7 +6,7 @@ From verifying `offfeed`, 2026-11-01. Rationale and decision IDs (`D#`): `sandbo
 
 | # | Item | Where | Status here |
 |---|------|-------|-------------|
-| P1 | Fix pnpm (corepack too old) | image build | `setup.sh` §3 · versions pending |
+| P1 | Fix pnpm (corepack too old) | image build | `setup.sh` §3 ✅ (latest, unpinned) |
 | P2 | Ship `~/.claude/statusline.sh` | image files | `claude/statusline.sh` ✅ |
 | P3 | Register Exa MCP | provisioning (host side) | `setup.sh` §6 ✅ |
 | P4 | Settings editing path for user (D12) | host SSH setup; editor optional | README ✅ · `nano` in `setup.sh` |

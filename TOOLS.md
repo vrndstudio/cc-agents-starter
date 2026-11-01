@@ -1,6 +1,6 @@
 # Tools installed by `setup.sh`
 
-One line each. Versions for pinned tools are at the top of `setup.sh`.
+One line each. Latest versions at install time; `verify.sh` shows which.
 
 | Tool | What it does |
 |------|--------------|

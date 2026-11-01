@@ -10,14 +10,6 @@ set -euo pipefail
 
 PROVISION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Exact pins. Bump deliberately, after checking the release notes.
-COREPACK_VERSION="__COREPACK__"
-PNPM_VERSION="__PNPM__"
-AST_GREP_VERSION="__AST_GREP__"
-PREK_VERSION="__PREK__"
-OXLINT_VERSION="__OXLINT__"
-OXFMT_VERSION="__OXFMT__"
-
 # ---------------------------------------------------------------------------
 # 1. Neutral git identity.
 #    Set globally inside the sandbox so the agent's commits are labelled 'dev'
@@ -29,7 +21,7 @@ git config --global init.defaultBranch main
 
 # ---------------------------------------------------------------------------
 # 2. Command line tools from apt. Checked individually, installed in one pass.
-#    fd-find installs its binary as 'fdfind'; step 3 adds the 'fd' name.
+#    fd-find installs its binary as 'fdfind'; the link below adds 'fd'.
 # ---------------------------------------------------------------------------
 missing=()
 command -v rg >/dev/null 2>&1 || missing+=(ripgrep)
@@ -54,24 +46,24 @@ fi
 # ---------------------------------------------------------------------------
 # 3. pnpm. The image's corepack (Debian 0.24.0) can't run current pnpm, which
 #    ships bin/pnpm.mjs instead of .cjs. Install a newer corepack under
-#    /usr/local, which comes first on PATH, claude. pin pnpm.
+#    /usr/local, which comes first on PATH, then activate the latest pnpm.
 #    'corepack prepare' runs as you so the download lands in your own cache.
 # ---------------------------------------------------------------------------
-if [ "$(corepack --version 2>/dev/null)" != "$COREPACK_VERSION" ]; then
-  sudo npm install -g --prefix /usr/local "corepack@$COREPACK_VERSION"
+if [ ! -x /usr/local/bin/corepack ]; then
+  sudo npm install -g --prefix /usr/local corepack@latest
 fi
 sudo corepack enable pnpm
-corepack prepare "pnpm@$PNPM_VERSION" --activate
+corepack prepare pnpm@latest --activate
 pnpm --version
 
 # ---------------------------------------------------------------------------
-# 4. Linters and code tools, pinned.
+# 4. Linters and code tools, latest versions.
 #    ast-grep and prek go through uv (per-user, no sudo); oxlint and oxfmt
 #    only ship on npm.
 # ---------------------------------------------------------------------------
-uv tool install "ast-grep-cli==$AST_GREP_VERSION"
-uv tool install "prek==$PREK_VERSION"
-sudo npm install -g --prefix /usr/local "oxlint@$OXLINT_VERSION" "oxfmt@$OXFMT_VERSION"
+uv tool install ast-grep-cli
+uv tool install prek
+sudo npm install -g --prefix /usr/local oxlint oxfmt
 
 # ---------------------------------------------------------------------------
 # 5. Your personal Claude config.
